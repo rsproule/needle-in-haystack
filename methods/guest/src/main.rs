@@ -10,7 +10,6 @@ use risc0_zkvm::{
 risc0_zkvm::guest::entry!(main);
 
 pub fn main() {
-    // TODO: Implement your guest code here
 
     // read the input
     let input: In = env::read();
@@ -25,7 +24,7 @@ pub fn main() {
     let hash = *Impl::hash_bytes(pre_image);
     env::commit(&Out {
         hash,
-        pre_image: pre_image.clone(),
+        // pre_image: pre_image.clone(),
         byte_chunk: input.byte_chunk.clone(),
     });
 }
