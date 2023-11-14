@@ -1,11 +1,8 @@
 [package]
-name = "host"
+name = "core"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-methods = { path = "../methods" }
-core = { path = "../core" }
 risc0-zkvm = { version = "0.19.1" }
-env_logger = "0.10"
 serde = "1.0"
