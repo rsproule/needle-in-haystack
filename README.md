@@ -31,27 +31,28 @@ here is the sample proof:
 
 ``` rust
 pub fn main() {
+    // Read the input
+    let In {
+        pre_image,
+        byte_chunk,
+        offset,
+    } = env::read();
 
-    // read the input
-    let input: In = env::read();
-    let pre_image = &input.pre_image;
-    let byte_chunk = &input.byte_chunk;
-    let offset = 4; // this is just to match the contrived example
-
+    // Verify that the 4 byte preimage chunk is present at the given offset within the preimage.
+    // Note: Does not handle OOB reads.
     let slice = &pre_image[offset..offset + byte_chunk.len()];
-    // it is impossible to create a valid proof if the byte chunk is not at the offset
     assert_eq!(slice, byte_chunk);
 
-    let hash = *Impl::hash_bytes(pre_image);
+    // Compute the `keccak256` hash of the preimage and commit it to the journal.
+    let hash = Digest::try_from(keccak(pre_image)).unwrap();
     env::commit(&Out {
         hash,
-        // pre_image: pre_image.clone(),
-        byte_chunk: input.byte_chunk.clone(),
+        byte_chunk,
+        offset,
     });
 }
-
 ```
 
 Note that the thing getting checked here is just some contrived example.
 
-Input to the prover is the pre image and the bytechunk. The output is the bytechunk and the sha256 digest (and a valid proof). This is sufficient to prove that the byte chunk corresponds to the hash.
+Input to the prover is the pre image and the bytechunk. The output is the bytechunk and the keccak256 digest (and a valid proof). This is sufficient to prove that the byte chunk corresponds to the hash.
